@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+  api:
+    build:
+      context: .
+    image: pas-api
+    restart: always
+    ports:
+      - 8004:8004
+    command: uvicorn lib.core.asgi:application --host 0.0.0.0 --port 8004 --workers 12 --log-level debug --reload
+    env_file: ${API_ENV_FILE:-env/.local.properties} 
+    volumes:
+      - "./:/app"
+    depends_on:
+      - database
+
+
+    networks:
+      - pas-net
+
+  database:
+    restart: always
+    image: postgres
+    env_file: ${API_ENV_FILE:-env/.local.properties} 
+    ports:
+      - 5400:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - pas-net
+
+
+
+volumes:
+  api_static:
+  postgres_data:
+  cache:
+    driver: local
+
+networks:
+  pas-net:
