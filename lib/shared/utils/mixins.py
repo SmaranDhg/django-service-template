@@ -1,11 +1,16 @@
-from typing import TypeVar
 from django.db import models
 
 
-_T = TypeVar("_T", bound="ModelMixin")
-
-
 class ModelMixin(models.Model):
+    """
+    Abstract base class for model mixins.
+
+    Attributes:
+        attrs (classmethod): A method that returns a set of attributes of the class that are not callable and do not start with an underscore.
+
+    Meta:
+        abstract (bool): Indicates that this class is abstract and should not be instantiated directly.
+    """
 
     @classmethod
     def attrs(self) -> "set":
@@ -14,15 +19,6 @@ class ModelMixin(models.Model):
             for attr in vars(self)
             if not callable(getattr(self, attr)) and not attr.startswith("_")
         }
-
-    class Meta:
-        abstract = True
-
-
-class DateTimeMixin(ModelMixin):
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-    deleted_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         abstract = True
