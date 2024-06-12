@@ -14,6 +14,7 @@ from .decorators import exception_handle
 class MetaResponseRenderer(JSONRenderer):
     """
     Renderer class for MetaResult format.
+    Basically parse the reponse and add meta data such as query_params and other request parameters.
     """
 
     media_type = "application/json"
